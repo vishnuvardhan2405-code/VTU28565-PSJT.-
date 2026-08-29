@@ -1,0 +1,73 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static int[] maxSubarray(List<Integer> arr) {
+        int n = arr.size();
+        
+        // 1. Calculate Maximum Subarray Sum using Kadane's Algorithm
+        int maxSubarraySum = arr.get(0);
+        int maxEndingHere = arr.get(0);
+        
+        // 2. Calculate Maximum Subsequence Sum
+        int maxSubsequenceSum = 0;
+        int maxElement = arr.get(0);
+        boolean hasPositive = false;
+        
+        if (arr.get(0) > 0) {
+            maxSubsequenceSum += arr.get(0);
+            hasPositive = true;
+        }
+        
+        for (int i = 1; i < n; i++) {
+            int val = arr.get(i);
+            
+            // Kadane's logic for subarray
+            maxEndingHere = Math.max(val, maxEndingHere + val);
+            maxSubarraySum = Math.max(maxSubarraySum, maxEndingHere);
+            
+            // Subsequence logic
+            if (val > 0) {
+                maxSubsequenceSum += val;
+                hasPositive = true;
+            }
+            
+            // Track max element in case all numbers are negative or zero
+            if (val > maxElement) {
+                maxElement = val;
+            }
+        }
+        
+        // If there are no positive numbers, the non-empty subsequence sum 
+        // must be the single largest element in the array.
+        if (!hasPositive) {
+            maxSubsequenceSum = maxElement;
+        }
+        
+        return new int[] { maxSubarraySum, maxSubsequenceSum };
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        if (!scanner.hasNextInt()) {
+            scanner.close();
+            return;
+        }
+
+        int t = scanner.nextInt();
+        for (int tc = 0; tc < t; tc++) {
+            int n = scanner.nextInt();
+            List<Integer> arr = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                arr.add(scanner.nextInt());
+            }
+            
+            int[] result = maxSubarray(arr);
+            System.out.println(result[0] + " " + result[1]);
+        }
+        
+        scanner.close();
+    }
+}
